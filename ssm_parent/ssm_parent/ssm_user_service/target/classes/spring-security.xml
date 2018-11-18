@@ -1,0 +1,42 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:secuity="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/security
+    http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <!--静态资源过滤-->
+    <security:http pattern="/css" security="none"/>
+    <security:http pattern="/img" security="none"/>
+    <security:http pattern="/plugins/**" security="none"/>
+    <security:http pattern="/*.jsp" security="none"/>
+
+    <security:http auto-config="true" use-expressions="false">
+        <security:intercept-url pattern="/**" access="ROLE_USER"/>
+
+        <!--登陆-->
+        <security:form-login
+                login-page="/login.jsp"
+                login-processing-url="/login"
+                default-target-url="/index.jsp"
+                authentication-failure-url="/failer.jsp"
+        />
+        <!--禁止跨域保护-->
+        <security:csrf disabled="true"/>
+        <!--退出-->
+        <security:logout
+                logout-url="/logout"
+                invalidate-session="true"
+                logout-success-url="/login.jsp"
+        />
+    </security:http>
+    <!--权限验证管理器-->
+    <security:authentication-manager>
+        <!--权限信息提供者-->
+       <security:authentication-provider user-service-ref="userServiceImpl">
+       </security:authentication-provider>
+    </security:authentication-manager>
+</beans>
